@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Sistemas Digitais - Quiz Interativo Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@300;400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151b3d;
+            --bg-card: #1a2142;
+            --accent-cyan: #00ffff;
+            --accent-green: #00ff88;
+            --accent-red: #ff0055;
+            --accent-yellow: #ffcc00;
+            --accent-purple: #b000ff;
+            --accent-orange: #ff6b00;
+            --text-primary: #e8e8e8;
+            --text-secondary: #8b92b0;
+            --border-glow: rgba(0, 255, 255, 0.3);
+            --shadow-neon: 0 0 20px rgba(0, 255, 255, 0.5);
+            --shadow-glow: 0 0 40px rgba(0, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0d1136 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(var(--accent-cyan) 1px, transparent 1px),
+                linear-gradient(90deg, var(--accent-cyan) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.03;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Score Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+            transform: translateY(-5px);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        /* Category Selection */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .category-card:hover::after {
+            opacity: 0.1;
+        }
+
+        .category-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--accent-cyan);
+        }
+
+        .category-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .category-count {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* Question Container */
+        .question-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: slideIn 0.5s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .question-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .question-category {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding: 0.3rem 0.8rem;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .question-text code {
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: var(--bg-secondary);
+            border: 2px solid var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--accent-cyan);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 255, 255, 0.05);
+            transform: translateX(10px);
+        }
+
+        .option:hover::before {
+            transform: scaleY(1);
+        }
+
+        .option-letter {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            min-width: 35px;
+            height: 35px;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .option.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .option.correct {
+            border-color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .option.correct .option-letter {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .option.wrong {
+            border-color: var(--accent-red);
+            background: rgba(255, 0, 85, 0.1);
+        }
+
+        .option.wrong .option-letter {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        /* Input Questions */
+        .input-answer {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        /* Feedback */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .feedback.correct {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        .feedback.wrong {
+            background: rgba(255, 0, 85, 0.1);
+            border-color: var(--accent-red);
+        }
+
+        .feedback-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feedback.correct .feedback-title {
+            color: var(--accent-green);
+        }
+
+        .feedback.wrong .feedback-title {
+            color: var(--accent-red);
+        }
+
+        .feedback-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Results Screen */
+        .results {
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .results-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 2rem 0;
+        }
+
+        .results-message {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .results-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--bg-secondary);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .question-container {
+                padding: 1.5rem;
+            }
+
+            .results-score {
+                font-size: 4rem;
+            }
+        }
+
+        /* Glitch effect for title */
+        @keyframes glitch {
+            0% {
+                text-shadow: 0.05em 0 0 var(--accent-red), -0.05em -0.025em 0 var(--accent-cyan);
+            }
+            14% {
+                text-shadow: 0.05em 0 0 var(--accent-red), -0.05em -0.025em 0 var(--accent-cyan);
+            }
+            15% {
+                text-shadow: -0.05em -0.025em 0 var(--accent-red), 0.05em 0.025em 0 var(--accent-cyan);
+            }
+            49% {
+                text-shadow: -0.05em -0.025em 0 var(--accent-red), 0.05em 0.025em 0 var(--accent-cyan);
+            }
+            50% {
+                text-shadow: 0.025em 0.05em 0 var(--accent-red), 0.05em 0 0 var(--accent-cyan);
+            }
+            99% {
+                text-shadow: 0.025em 0.05em 0 var(--accent-red), 0.05em 0 0 var(--accent-cyan);
+            }
+            100% {
+                text-shadow: -0.025em 0 0 var(--accent-red), -0.025em -0.025em 0 var(--accent-cyan);
+            }
+        }
+
+        h1:hover {
+            animation: glitch 0.5s;
+        }
+
+        /* ===== NOVAS MELHORIAS ===== */
+
+        /* Modo Dificuldade */
+        .difficulty-selector {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border-glow);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .difficulty-btn:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+            transform: translateY(-2px);
+        }
+
+        .difficulty-btn.easy {
+            border-color: var(--accent-green);
+        }
+
+        .difficulty-btn.medium {
+            border-color: var(--accent-yellow);
+        }
+
+        .difficulty-btn.hard {
+            border-color: var(--accent-red);
+        }
+
+        .difficulty-btn.easy.active {
+            background: rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 20px var(--accent-green);
+        }
+
+        .difficulty-btn.medium.active {
+            background: rgba(255, 204, 0, 0.2);
+            box-shadow: 0 0 20px var(--accent-yellow);
+        }
+
+        .difficulty-btn.hard.active {
+            background: rgba(255, 0, 85, 0.2);
+            box-shadow: 0 0 20px var(--accent-red);
+        }
+
+        /* Timer */
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-glow);
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .timer-warning {
+            color: var(--accent-yellow) !important;
+        }
+
+        .timer-danger {
+            color: var(--accent-red) !important;
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.5; }
+        }
+
+        /* Hints System */
+        .hints-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .hint-button {
+            padding: 0.6rem 1rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .hint-button:hover:not(:disabled) {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            box-shadow: var(--shadow-neon);
+        }
+
+        .hint-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .hint-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(176, 0, 255, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Achievement Badge */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(176, 0, 255, 0.2);
+            border: 2px solid var(--accent-purple);
+            border-radius: 20px;
+            color: var(--accent-purple);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-glow);
+            color: var(--accent-cyan);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            box-shadow: var(--shadow-neon);
+            transform: scale(1.1);
+        }
+
+        /* Results Certificate */
+        .certificate {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 255, 255, 0.1) 100%);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin: 2rem 0;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .certificate-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .certificate-line {
+            border-bottom: 2px dashed var(--border-glow);
+            margin: 1.5rem 0;
+        }
+
+        .certificate-text {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin: 1rem 0;
+        }
+
+        /* Progress Ring */
+        .progress-ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .progress-ring {
+            width: 200px;
+            height: 200px;
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Enhanced Options */
+        .option-enhanced {
+            position: relative;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 255, 255, 0.05) 100%);
+        }
+
+        .option-enhanced::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-glow);
+            border-radius: 4px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option-enhanced:hover::after {
+            opacity: 1;
+        }
+
+        .option-enhanced.selected::after {
+            background: var(--accent-cyan);
+            opacity: 1;
+        }
+
+        /* Keyboard Navigation */
+        .keyboard-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile Improvements */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .question-container {
+                padding: 1.5rem;
+            }
+
+            .results-score {
+                font-size: 4rem;
+            }
+
+            .top-bar {
+                flex-direction: column;
+            }
+
+            .difficulty-selector {
+                gap: 0.5rem;
+            }
+
+            .difficulty-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.75rem;
+            }
+
+            .timer-container {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--accent-cyan);
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0d1136 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-glow);
+            border-top: 3px solid var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: fadeInOut 1.5s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Streak Counter */
+        .streak-counter {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            gap: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .streak-number {
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .streak-flame {
+            font-size: 1.5rem;
+            animation: bounce 0.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Comparison Mode */
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .comparison-item {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-cyan);
+        }
+
+        .comparison-item.wrong {
+            border-left-color: var(--accent-red);
+        }
+
+        .comparison-item.correct {
+            border-left-color: var(--accent-green);
+        }
+
+        .comparison-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tabs Navigation */
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-glow);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+            transform: translateY(-3px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+
+        /* Study Content */
+        .study-screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .study-screen.active {
+            display: block;
+        }
+
+        .materials-screen {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .materials-screen.active {
+            display: block;
+        }
+
+        .guide-image {
+            width: 100%;
+            max-width: 1000px;
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-neon);
+            cursor: zoom-in;
+            transition: all 0.3s ease;
+        }
+
+        .guide-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Flashcards */
+        .flashcard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 255, 255, 0.05) 100%);
+            border: 2px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            perspective: 1000px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .flashcard:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-glow);
+            transform: rotateY(5deg) scale(1.05);
+        }
+
+        .flashcard.flipped {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 255, 0.1) 100%);
+        }
+
+        .flashcard-front {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .flashcard-back {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .flashcard.flipped .flashcard-front {
+            display: none;
+        }
+
+        .flashcard.flipped .flashcard-back {
+            display: block;
+        }
+
+        /* Video Container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-neon);
+        }
+
+        .video-container-inner {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* PDF Viewer */
+        .pdf-container {
+            background: var(--bg-card);
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .pdf-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-green));
+            color: var(--bg-primary);
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .pdf-link:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        /* Material Cards */
+        .material-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .material-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+        }
+
+        .material-card h3 {
+            color: var(--accent-cyan);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .material-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Concept Grid */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 255, 255, 0.05) 100%);
+            border: 2px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .concept-box:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--shadow-neon);
+            transform: translateY(-5px);
+        }
+
+        .concept-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .concept-content {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .concept-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Zoom Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: auto;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            cursor: pointer;
+            z-index: 2001;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-red);
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles-container"></div>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Carregando Quiz...</div>
+    </div>
+
+    <div class="container">
+        <div class="top-bar" id="top-bar">
+            <div>
+                <button class="theme-toggle" id="theme-toggle" title="Alternar tema">🌙</button>
+            </div>
+            <div id="streak-display"></div>
+        </div>
+
+        <header>
+            <h1>⚡ SISTEMAS DIGITAIS</h1>
+            <p class="subtitle">Quiz Interativo Pro - Versão 2.0</p>
+        </header>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <div class="stat-card">
+                <div class="stat-label">Pontuação</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Questão Atual</div>
+                <div class="stat-value" id="current-question">0/0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Acertos</div>
+                <div class="stat-value" id="correct-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Percentual</div>
+                <div class="stat-value" id="percentage">0%</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div id="tabs-nav" style="display: flex; gap: 1rem; margin-bottom: 2rem; justify-content: center; flex-wrap: wrap;">
+            <button class="tab-btn active" onclick="switchTab('quiz', this)">
+                🎮 PRATICAR
+            </button>
+            <button class="tab-btn" onclick="switchTab('study', this)">
+                📚 ESTUDAR
+            </button>
+            <button class="tab-btn" onclick="switchTab('materials', this)">
+                📖 MATERIAL
+            </button>
+        </div>
+
+        <!-- Category Selection -->
+        <div id="category-screen">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h3 style="color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; margin-bottom: 1rem;">SELECIONE O NÍVEL DE DIFICULDADE:</h3>
+                <div class="difficulty-selector">
+                    <button class="difficulty-btn easy active" onclick="setDifficulty('easy')">
+                        <i class="bi bi-star"></i> Fácil
+                    </button>
+                    <button class="difficulty-btn medium" onclick="setDifficulty('medium')">
+                        <i class="bi bi-star-fill"></i> Médio
+                    </button>
+                    <button class="difficulty-btn hard" onclick="setDifficulty('hard')">
+                        <i class="bi bi-fire"></i> Difícil
+                    </button>
+                </div>
+            </div>
+
+            <div class="category-grid">
+                <div class="category-card" onclick="startQuiz('conversoes')">
+                    <div class="category-icon">🔢</div>
+                    <div class="category-title">Conversões</div>
+                    <div class="category-desc">Binário, Decimal, Octal, Hexadecimal e Complementos</div>
+                    <div class="category-count">● 15 questões</div>
+                </div>
+
+                <div class="category-card" onclick="startQuiz('portas')">
+                    <div class="category-icon">🚪</div>
+                    <div class="category-title">Portas Lógicas</div>
+                    <div class="category-desc">AND, OR, NOT, NAND, NOR, XOR, XNOR e tabelas verdade</div>
+                    <div class="category-count">● 12 questões</div>
+                </div>
+
+                <div class="category-card" onclick="startQuiz('algebra')">
+                    <div class="category-icon">📐</div>
+                    <div class="category-title">Álgebra Booleana</div>
+                    <div class="category-desc">Leis, Postulados e Teoremas de DeMorgan</div>
+                    <div class="category-count">● 12 questões</div>
+                </div>
+
+                <div class="category-card" onclick="startQuiz('karnaugh')">
+                    <div class="category-icon">🗺️</div>
+                    <div class="category-title">Mapa de Karnaugh</div>
+                    <div class="category-desc">Simplificação e Minimização de Expressões</div>
+                    <div class="category-count">● 10 questões</div>
+                </div>
+
+                <div class="category-card" onclick="startQuiz('all')">
+                    <div class="category-icon">🎯</div>
+                    <div class="category-title">Quiz Completo</div>
+                    <div class="category-desc">Todas as categorias misturadas - Modo Prova!</div>
+                    <div class="category-count">● 49 questões</div>
+                </div>
+
+                <div class="category-card" onclick="showStats()">
+                    <div class="category-icon">📊</div>
+                    <div class="category-title">Meu Desempenho</div>
+                    <div class="category-desc">Ver histórico e estatísticas de progresso</div>
+                    <div class="category-count">● Dados Salvos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div class="timer-container" id="timer-display">
+                    <span class="timer-icon">⏱️</span>
+                    <span id="timer-value">00:00</span>
+                </div>
+                <div class="achievement-badge" id="achievement-badge"></div>
+            </div>
+
+            <div class="question-container" id="question-container">
+                <!-- Question content will be inserted here -->
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="previousQuestion()">
+                    <span>← Anterior</span>
+                </button>
+                <button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">
+                    <span>Verificar Resposta</span>
+                </button>
+                <button class="btn btn-primary hidden" id="next-btn" onclick="nextQuestion()">
+                    <span>Próxima →</span>
+                </button>
+                <button class="btn btn-secondary" onclick="quitQuiz()">
+                    <span>✕ Sair</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden">
+            <div class="results">
+                <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 1rem;">🎉 QUIZ FINALIZADO!</h2>
+                <div class="results-score" id="final-score">0%</div>
+                <div class="results-message" id="results-message">Mensagem</div>
+
+                <div class="certificate" id="certificate"></div>
+
+                <div class="results-breakdown" id="results-breakdown">
+                    <!-- Breakdown will be inserted here -->
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="location.reload()">
+                        <span>🔄 Novo Quiz</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadResults()">
+                        <span>⬇️ Baixar Resultado</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Screen -->
+        <div id="study-screen" class="study-screen">
+            <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; margin: 2rem 0; text-transform: uppercase; letter-spacing: 2px;">
+                📚 Guia de Sobrevivência - Sistemas Digitais
+            </h2>
+
+            <img src="unnamed.png" class="guide-image" onclick="zoomImage(this);" alt="Guia de Sobrevivência Sistemas Digitais">
+
+            <h3 style="text-align: center; color: var(--accent-yellow); margin-top: 3rem; font-family: 'Orbitron', sans-serif;">
+                ⚡ CONCEITOS PRINCIPAIS EM FLASHCARDS
+            </h3>
+
+            <div class="flashcard-container" id="flashcard-container">
+                <!-- Flashcards will be generated by JavaScript -->
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="switchTab('materials', document.querySelector('.tab-btn:nth-child(3)'))">
+                    <span>📖 Ver Material Completo →</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Materials Screen -->
+        <div id="materials-screen" class="materials-screen">
+            <h2 style="text-align: center; color: var(--accent-cyan); font-family: 'Orbitron', sans-serif; margin: 2rem 0; text-transform: uppercase; letter-spacing: 2px;">
+                📖 MATERIAL DE ESTUDO COMPLETO
+            </h2>
+
+            <!-- Video Section -->
+            <div class="material-card">
+                <h3>🎬 Vídeo Aula Completa</h3>
+                <p>Assista ao vídeo com a explicação completa sobre Sistemas Digitais:</p>
+                <div class="video-container">
+                    <div class="video-container-inner">
+                        <video controls>
+                            <source src="Guia_de_Última_Hora__Sistemas_Digitais.mp4" type="video/mp4">
+                            Seu navegador não suporta vídeos HTML5.
+                        </video>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF Section -->
+            <div class="material-card">
+                <h3>📑 Slides em PDF</h3>
+                <p>Acesse os slides completos com todos os conceitos e exemplos:</p>
+                <br>
+                <a href="Digital_Systems_Blueprint.pdf" class="pdf-link" target="_blank">
+                    <span>📥</span>
+                    <span>Abrir Slides em PDF</span>
+                </a>
+            </div>
+
+            <!-- Concepts Section -->
+            <div class="material-card">
+                <h3>🎯 Resumo dos Conceitos</h3>
+                
+                <div class="concept-grid">
+                    <div class="concept-box">
+                        <div class="concept-icon">🔢</div>
+                        <div class="concept-title">Binário & Decimal</div>
+                        <div class="concept-content">
+                            <strong>Segredo dos Pesos:</strong> Cada posição é uma potência de 2 (16, 8, 4, 2, 1)
+                            <br><br>
+                            <strong>Dica:</strong> Para converter: Multiplique cada bit pelo seu peso e some.
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">🔤</div>
+                        <div class="concept-title">Hexadecimal</div>
+                        <div class="concept-content">
+                            <strong>Atalho dos 4 Bits:</strong> Agrupe 4 bits e converta cada grupo (0-F)
+                            <br><br>
+                            <strong>Tabela Rápida:</strong> 10=A, 11=B, 12=C, 13=D, 14=E, 15=F
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">⚖️</div>
+                        <div class="concept-title">Complemento de 2</div>
+                        <div class="concept-content">
+                            <strong>Macete do Negativo:</strong> Inverter + 1
+                            <br><br>
+                            <strong>Peso do MSB:</strong> O bit mais à esquerda tem peso negativo.
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">🚪</div>
+                        <div class="concept-title">Porta AND</div>
+                        <div class="concept-content">
+                            <strong>Regra de Ouro:</strong> Exigente: Saída 1 SOMENTE se TODAS entradas = 1
+                            <br><br>
+                            <strong>Lembre:</strong> "E lógico" = todos os pré-requisitos devem ser atendidos
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">🔀</div>
+                        <div class="concept-title">Porta OR</div>
+                        <div class="concept-content">
+                            <strong>Regra de Ouro:</strong> Permissiva: Saída 0 SOMENTE se TODAS = 0
+                            <br><br>
+                            <strong>Lembre:</strong> "OU lógico" = pelo menos uma entrada 1 gera saída 1
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">🔄</div>
+                        <div class="concept-title">Inversoras (NAND/NOR/XOR)</div>
+                        <div class="concept-content">
+                            <strong>NAND/NOR:</strong> Negam AND e OR (troque 0s por 1s e vice-versa)
+                            <br><br>
+                            <strong>XOR:</strong> Saída 1 quando entradas DIFERENTES
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">📐</div>
+                        <div class="concept-title">DeMorgan - Quebra a Barra!</div>
+                        <div class="concept-content">
+                            (A·B)' = A' + B'  →  Negar AND = OU dos negados
+                            <br><br>
+                            (A+B)' = A'·B'  →  Negar OR = E dos negados
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">🗺️</div>
+                        <div class="concept-title">Karnaugh - Maior é Melhor!</div>
+                        <div class="concept-content">
+                            <strong>Regra Ouro:</strong> Quanto maior o grupo, menos variáveis na expressão final
+                            <br><br>
+                            <strong>Atalho:</strong> Procure agrupamentos de potências de 2 (1,2,4,8,16...)
+                        </div>
+                    </div>
+
+                    <div class="concept-box">
+                        <div class="concept-icon">⏱️</div>
+                        <div class="concept-title">Cola Rápida Final</div>
+                        <div class="concept-content">
+                            [00-15s] Conversão: Decimal pra binário (Divida por 2)
+                            <br>[15-40s] Lógica: AND (1=1), OR (0=0)
+                            <br>[40-60s] Simplificação: DeMorgan + Karnaugh
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Study Tips -->
+            <div class="material-card">
+                <h3>💡 DICAS FINAIS PARA A PROVA</h3>
+                <ul style="color: var(--text-secondary); line-height: 2; margin-left: 1.5rem;">
+                    <li>✅ Sempre verifique o <strong>padrão de células adjacentes</strong> no K-Map (diferem em 1 bit)</li>
+                    <li>✅ Para conversão hexadecimal: <strong>agrupe em 4 bits</strong> (2^4 = 16 combinações)</li>
+                    <li>✅ Complemento de 2: <strong>MSB é negativo</strong>, os outros são positivos</li>
+                    <li>✅ Tabelas de portas: <strong>AND exigente (111), OR permissiva (000)</strong></li>
+                    <li>✅ DeMorgan: <strong>"quebra a barra, muda o sinal"</strong></li>
+                    <li>✅ K-Map: <strong>grupos maiores = expressão menor</strong></li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="switchTab('quiz', document.querySelector('.tab-btn:nth-child(1)'))">
+                    <span>🎮 Voltar para PRATICAR →</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Image Zoom Modal -->
+        <div id="image-modal" class="modal" onclick="closeZoom(event)">
+            <span class="close-modal" onclick="closeZoom()">&times;</span>
+            <div class="modal-content">
+                <img id="modal-image" src="" alt="Zoom Imagem">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== INICIALIZAÇÃO =====
+        let globalDifficulty = 'easy';
+        let quizStartTime = null;
+        let timerInterval = null;
+        let currentStreak = 0;
+
+        // Flashcards Data
+        const flashcardsData = [
+            {
+                front: "🔢 Segredo dos Pesos",
+                back: "Cada posição em binário é uma potência de 2<br>16, 8, 4, 2, 1<br>Some os valores das posições com 1"
+            },
+            {
+                front: "📊 Converter Decimal→Binário",
+                back: "Divida o número por 2 sucessivamente<br>Pegue os restos de baixo para cima<br>Exemplo: 22 = 10110₂"
+            },
+            {
+                front: "🔤 Hexadecimal - 4 Bits",
+                back: "Agrupe em conjuntos de 4 bits<br>Converta cada grupo: 0-9 = 0-9, 10-15 = A-F<br>Exemplo: 1101₂ = D₁₆"
+            },
+            {
+                front: "⚖️ Complemento de 2",
+                back: "Para negativos: Inverta todos os bits + 1<br>MSB (bit esquerdo) = peso NEGATIVO<br>Macete: Inverter + 1"
+            },
+            {
+                front: "🚪 Porta AND",
+                back: "Saída = 1 SOMENTE se TODAS entradas = 1<br>Qualquer 0 na entrada = 0 na saída<br>Exigente! Tudo deve ser verdadeiro"
+            },
+            {
+                front: "🔀 Porta OR",
+                back: "Saída = 0 SOMENTE se TODAS entradas = 0<br>Qualquer 1 na entrada = 1 na saída<br>Permissiva! Pelo menos uma verdade = saída 1"
+            },
+            {
+                front: "🔄 Porta NOT",
+                back: "Inverte a entrada<br>0 vira 1, 1 vira 0<br>Complemento simples: Ā"
+            },
+            {
+                front: "❌ Portas Inversoras",
+                back: "NAND = NOT + AND<br>NOR = NOT + OR<br>XOR = OU Exclusivo (saída 1 quando diferentes)"
+            },
+            {
+                front: "📐 Lei da Anulação",
+                back: "A + 0 = A (identidade da soma)<br>A · 1 = A (identidade do produto)<br>A · 0 = 0 (anulação)<br>A + 1 = 1 (anulação)"
+            },
+            {
+                front: "🔗 Lei da Absorção",
+                back: "A + (A·B) = A<br>A · (A+B) = A<br>A 'absorve' o termo B"
+            },
+            {
+                front: "🔀 Teoremas de DeMorgan",
+                back: "(A·B)' = A' + B' (quebra a barra AND→OR)<br>(A+B)' = A'·B' (quebra a barra OR→AND)<br>Muda o sinal lógico!"
+            },
+            {
+                front: "🗺️ Mapa de Karnaugh",
+                back: "Simplificação visual de expressões booleanas<br>Agrupa células adjacentes (diferem em 1 bit)<br>Grupos maiores = expressão menor"
+            },
+            {
+                front: "📊 Código Gray",
+                back: "Cada célula adjacente no K-map diferem em APENAS 1 bit<br>Horizontal e vertical, mas NÃO diagonal<br>As bordas também se conectam!"
+            },
+            {
+                front: "🎯 K-Map - Regra de Ouro",
+                back: "Tamanho de grupo: potências de 2 (1,2,4,8,16...)<br>Quanto MAIOR o grupo, MENOR a expressão<br>Procure os maiores agrupamentos possíveis"
+            },
+            {
+                front: "⏱️ Cola Rápida Prova",
+                back: "[0-15s] Conversões base (÷2, hexa)\n[15-40s] Portas lógicas (tabelas verdade)\n[40-60s] Simplificação (DeMorgan, K-map)"
+            }
+        ];
+
+        // Switch Tabs
+        function switchTab(tabName, buttonElement) {
+            // Hide all sections
+            document.getElementById('category-screen')?.classList.add('hidden');
+            document.getElementById('quiz-screen')?.classList.add('hidden');
+            document.getElementById('study-screen')?.classList.remove('active');
+            document.getElementById('materials-screen')?.classList.remove('active');
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to clicked button
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+
+            // Show selected section
+            if (tabName === 'quiz') {
+                document.getElementById('category-screen').classList.remove('hidden');
+            } else if (tabName === 'study') {
+                document.getElementById('study-screen').classList.add('active');
+                generateFlashcards();
+            } else if (tabName === 'materials') {
+                document.getElementById('materials-screen').classList.add('active');
+            }
+
+            localStorage.setItem('currentTab', tabName);
+        }
+
+        // Generate Flashcards
+        function generateFlashcards() {
+            const container = document.getElementById('flashcard-container');
+            if (!container) return;
+            
+            container.innerHTML = flashcardsData.map((card, index) => `
+                <div class="flashcard" onclick="toggleFlashcard(this)">
+                    <div class="flashcard-front">${card.front}</div>
+                    <div class="flashcard-back">${card.back}</div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle Flashcard
+        function toggleFlashcard(element) {
+            element.classList.toggle('flipped');
+        }
+
+        // Zoom Image
+        function zoomImage(img) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            modalImage.src = img.src;
+            modal.classList.add('active');
+        }
+
+        // Close Zoom
+        function closeZoom(event) {
+            if (event && event.target.id !== 'image-modal') return;
+            document.getElementById('image-modal').classList.remove('active');
+        }
+
+        // Criar partículas background
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 20) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Toggle Tema
+        function toggleTheme() {
+            const root = document.documentElement;
+            const currentBg = getComputedStyle(root).getPropertyValue('--bg-primary');
+            
+            if (currentBg.includes('0a0e27')) {
+                // Mudar para light mode
+                root.style.setProperty('--bg-primary', '#f5f5f5');
+                root.style.setProperty('--bg-secondary', '#e8e8e8');
+                root.style.setProperty('--bg-card', '#ffffff');
+                root.style.setProperty('--text-primary', '#1a1a1a');
+                root.style.setProperty('--text-secondary', '#666666');
+                document.getElementById('theme-toggle').textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                // Mudar para dark mode
+                root.style.setProperty('--bg-primary', '#0a0e27');
+                root.style.setProperty('--bg-secondary', '#151b3d');
+                root.style.setProperty('--bg-card', '#1a2142');
+                root.style.setProperty('--text-primary', '#e8e8e8');
+                root.style.setProperty('--text-secondary', '#8b92b0');
+                document.getElementById('theme-toggle').textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Definir Dificuldade
+        function setDifficulty(level) {
+            globalDifficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.difficulty-btn').classList.add('active');
+            localStorage.setItem('difficulty', level);
+        }
+
+        // Quiz Data EXPANDIDO
+        const quizData = {
+            conversoes: [
+                {
+                    question: "Converta o número binário <code>10110101</code> para decimal:",
+                    type: "multiple",
+                    options: ["165", "181", "201", "213"],
+                    correct: 1,
+                    explanation: "10110101₂ = 128+32+16+4+1 = 181₁₀",
+                    hint: "Some os valores das posições onde há 1: 128 + 32 + 16 + 4 + 1"
+                },
+                {
+                    question: "Qual é o número decimal <code>47</code> em binário?",
+                    type: "multiple",
+                    options: ["101111", "110111", "100111", "101011"],
+                    correct: 0,
+                    explanation: "47 ÷ 2: restos de baixo para cima = 101111₂",
+                    hint: "Divida sucessivamente por 2 e pegue os restos ao contrário"
+                },
+                {
+                    question: "Converta <code>3F₁₆</code> (hexadecimal) para decimal:",
+                    type: "multiple",
+                    options: ["47", "53", "63", "71"],
+                    correct: 2,
+                    explanation: "3F₁₆ = 3×16 + 15 = 48+15 = 63₁₀",
+                    hint: "3 = 3, F = 15. Calcule: 3×16 + 15"
+                },
+                {
+                    question: "Qual o hexadecimal correspondente ao binário <code>11010110</code>?",
+                    type: "multiple",
+                    options: ["D6", "C6", "E6", "B6"],
+                    correct: 0,
+                    explanation: "1101|0110 → D|6 = D6₁₆",
+                    hint: "Agrupe em 4 bits: 1101=D (13) e 0110=6"
+                },
+                {
+                    question: "O complemento de 2 do binário <code>00101101</code> é:",
+                    type: "multiple",
+                    options: ["11010010", "11010011", "10010010", "10010011"],
+                    correct: 1,
+                    explanation: "C1 = 11010010, C2 = C1+1 = 11010011",
+                    hint: "Inverta todos os bits e some 1"
+                },
+                {
+                    question: "Em um sistema de 8 bits, quantos números diferentes podem ser representados?",
+                    type: "multiple",
+                    options: ["128", "256", "512", "1024"],
+                    correct: 1,
+                    explanation: "2ⁿ = 2⁸ = 256 números (de 0 a 255)",
+                    hint: "Use a fórmula 2^n onde n é o número de bits"
+                },
+                {
+                    question: "Converta <code>257₈</code> (octal) para decimal:",
+                    type: "multiple",
+                    options: ["167", "175", "183", "191"],
+                    correct: 1,
+                    explanation: "257₈ = 2×64 + 5×8 + 7 = 128+40+7 = 175₁₀",
+                    hint: "2×8² + 5×8¹ + 7×8⁰"
+                },
+                {
+                    question: "Qual é o maior número representável com 4 bits?",
+                    type: "multiple",
+                    options: ["8", "15", "16", "31"],
+                    correct: 1,
+                    explanation: "2⁴ - 1 = 16 - 1 = 15 (binário 1111)",
+                    hint: "Todos os bits em 1: 1111₂"
+                },
+                {
+                    question: "O binário <code>11110101</code> em complemento de 2 representa qual decimal?",
+                    type: "multiple",
+                    options: ["-11", "-10", "-9", "-8"],
+                    correct: 0,
+                    explanation: "MSB negativo: -128 + 64+32+16+4+1 = -128+117 = -11",
+                    hint: "O primeiro bit é negativo em complemento de 2"
+                },
+                {
+                    question: "Converta <code>AB₁₆</code> para binário:",
+                    type: "multiple",
+                    options: ["10101011", "10111010", "11101010", "10101110"],
+                    correct: 0,
+                    explanation: "A=1010, B=1011 → 10101011₂",
+                    hint: "A=10, B=11 em decimal. Converta cada um para 4 bits"
+                },
+                {
+                    question: "Quantas combinações diferentes um dígito hexadecimal pode ter?",
+                    type: "multiple",
+                    options: ["8", "16", "32", "64"],
+                    correct: 1,
+                    explanation: "De 0 a F (0-15) = 16 combinações = 2⁴ bits",
+                    hint: "0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F"
+                },
+                {
+                    question: "Qual o equivalente decimal de <code>FF₁₆</code>?",
+                    type: "multiple",
+                    options: ["225", "240", "255", "270"],
+                    correct: 2,
+                    explanation: "F×16 + F = 15×16 + 15 = 240 + 15 = 255",
+                    hint: "F = 15, então F×16 + F = 15×16 + 15"
+                },
+                {
+                    question: "O complemento de 1 inverte quais bits?",
+                    type: "multiple",
+                    options: ["Apenas o MSB", "Todos os bits", "Apenas o LSB", "Nenhum"],
+                    correct: 1,
+                    explanation: "Complemento de 1: inverte todos os bits (0→1, 1→0)",
+                    hint: "É uma simples inversão de todos os bits"
+                },
+                {
+                    question: "Qual base usamos no sistema decimal?",
+                    type: "multiple",
+                    options: ["Base 2", "Base 8", "Base 10", "Base 16"],
+                    correct: 2,
+                    explanation: "Sistema decimal usa base 10 (dígitos 0-9)",
+                    hint: "Você usa este sistema todos os dias"
+                },
+                {
+                    question: "Quantos dígitos diferentes o sistema binário usa?",
+                    type: "multiple",
+                    options: ["1", "2", "3", "4"],
+                    correct: 1,
+                    explanation: "Binário usa apenas 2 dígitos: 0 e 1",
+                    hint: "Bi = dois"
+                }
+            ],
+            portas: [
+                {
+                    question: "Qual porta lógica tem saída 1 SOMENTE quando TODAS as entradas são 1?",
+                    type: "multiple",
+                    options: ["OR", "AND", "XOR", "NAND"],
+                    correct: 1,
+                    explanation: "A porta AND (E lógico) só tem saída 1 quando todas entradas = 1",
+                    hint: "Pense em 'E' (and): todos os pré-requisitos devem ser atendidos"
+                },
+                {
+                    question: "A saída de uma porta OR é 0 quando:",
+                    type: "multiple",
+                    options: ["Pelo menos uma entrada é 0", "Todas as entradas são 0", "Todas as entradas são 1", "Entradas são diferentes"],
+                    correct: 1,
+                    explanation: "OR tem saída 0 SOMENTE quando todas entradas = 0",
+                    hint: "OU (or): pelo menos uma entrada 1 gera saída 1"
+                },
+                {
+                    question: "Qual expressão representa uma porta NAND?",
+                    type: "multiple",
+                    options: ["A+B", "A·B", "A·B com barra", "A⊕B"],
+                    correct: 2,
+                    explanation: "NAND = NOT-AND = complemento do produto (A·B com barra superior)",
+                    hint: "NAND = NOT + AND (o inverso de AND)"
+                },
+                {
+                    question: "Uma porta XOR tem saída 1 quando:",
+                    type: "multiple",
+                    options: ["Entradas iguais", "Entradas diferentes", "Todas = 1", "Todas = 0"],
+                    correct: 1,
+                    explanation: "XOR (OU Exclusivo) = 1 quando entradas DIFERENTES",
+                    hint: "X = exclusivo. Saída = 1 só quando há diferença"
+                },
+                {
+                    question: "Qual a tabela verdade correta para XNOR com entradas A=1, B=1?",
+                    type: "multiple",
+                    options: ["Saída = 0", "Saída = 1", "Saída = A", "Saída = B"],
+                    correct: 1,
+                    explanation: "XNOR = 1 quando entradas IGUAIS. A=B=1 → Saída=1",
+                    hint: "XNOR é o inverso do XOR"
+                },
+                {
+                    question: "A inversão de uma porta NOR resulta em qual porta?",
+                    type: "multiple",
+                    options: ["AND", "OR", "NAND", "XOR"],
+                    correct: 1,
+                    explanation: "NOR com saída invertida = (A+B com barra) com barra = A+B = OR",
+                    hint: "NOR é OR negado, então negar NOR = OR"
+                },
+                {
+                    question: "Para A=1, B=0 em uma porta AND, a saída é:",
+                    type: "multiple",
+                    options: ["0", "1", "A", "B"],
+                    correct: 0,
+                    explanation: "AND: 1·0 = 0 (só é 1 se TODAS = 1)",
+                    hint: "AND precisa que TODAS entradas sejam 1"
+                },
+                {
+                    question: "Qual porta implementa a função 'complemento'?",
+                    type: "multiple",
+                    options: ["AND", "OR", "NOT", "XOR"],
+                    correct: 2,
+                    explanation: "NOT (inversor) implementa o complemento: A → Ā",
+                    hint: "NOT inverte a entrada: 0→1, 1→0"
+                },
+                {
+                    question: "Para A=0, B=0 em uma porta OR, a saída é:",
+                    type: "multiple",
+                    options: ["0", "1", "indefinida", "alternada"],
+                    correct: 0,
+                    explanation: "OR: 0+0 = 0 (precisa de pelo menos uma entrada 1)",
+                    hint: "OR só dá 0 quando TODAS entradas são 0"
+                },
+                {
+                    question: "Qual porta tem tabela verdade inversamente proporcional?",
+                    type: "multiple",
+                    options: ["AND", "NOT", "OR", "NAND"],
+                    correct: 1,
+                    explanation: "NOT: entrada 0 → saída 1, entrada 1 → saída 0",
+                    hint: "Inversamente proporcional = inverso completo"
+                },
+                {
+                    question: "Quantas portas lógicas básicas existem?",
+                    type: "multiple",
+                    options: ["2", "3", "5", "7"],
+                    correct: 2,
+                    explanation: "AND, OR, NOT, NAND, NOR (XOR e XNOR são derivadas)",
+                    hint: "AND, OR, NOT + suas combinações"
+                },
+                {
+                    question: "Qual é a saída de uma NAND com A=0, B=0?",
+                    type: "multiple",
+                    options: ["0", "1", "Indefinida", "Oscilante"],
+                    correct: 1,
+                    explanation: "NAND: 0·0 com negação = inverta 0 = 1",
+                    hint: "NAND é AND negado. AND(0,0)=0, NAND(0,0)=1"
+                }
+            ],
+            algebra: [
+                {
+                    question: "Qual lei afirma que A+0 = A?",
+                    type: "multiple",
+                    options: ["Anulação", "Identidade", "Idempotência", "Complemento"],
+                    correct: 1,
+                    explanation: "Lei da Identidade: A+0=A e A·1=A (elemento neutro)",
+                    hint: "Identidade = não muda a identidade do elemento"
+                },
+                {
+                    question: "A expressão A + Ā é igual a:",
+                    type: "multiple",
+                    options: ["0", "1", "A", "Ā"],
+                    correct: 1,
+                    explanation: "Lei do Complemento: A+Ā = 1 (sempre verdadeiro)",
+                    hint: "Ou A ou seu complemento será verdadeiro"
+                },
+                {
+                    question: "Segundo o 1º Teorema de DeMorgan, A·B com barra é igual a:",
+                    type: "multiple",
+                    options: ["A+B", "Ā+B̄", "Ā·B̄", "A·B"],
+                    correct: 1,
+                    explanation: "DeMorgan 1: complemento do produto = soma dos complementos",
+                    hint: "Negar AND = OU dos negados"
+                },
+                {
+                    question: "A expressão A + A·B é igual a (Lei da Absorção):",
+                    type: "multiple",
+                    options: ["A", "B", "A·B", "A+B"],
+                    correct: 0,
+                    explanation: "Lei da Absorção: A + A·B = A (A 'absorve' o termo)",
+                    hint: "A domina: A + (A e qualquer coisa) = A"
+                },
+                {
+                    question: "Qual o resultado de A · 0?",
+                    type: "multiple",
+                    options: ["0", "1", "A", "Ā"],
+                    correct: 0,
+                    explanation: "Lei da Anulação: A·0 = 0 (AND com 0 sempre = 0)",
+                    hint: "AND com 0 sempre resulta em 0"
+                },
+                {
+                    question: "O 2º Teorema de DeMorgan afirma que A+B com barra é:",
+                    type: "multiple",
+                    options: ["Ā+B̄", "Ā·B̄", "A·B", "A+B"],
+                    correct: 1,
+                    explanation: "DeMorgan 2: complemento da soma = produto dos complementos",
+                    hint: "Negar OR = E dos negados"
+                },
+                {
+                    question: "A dupla negação de A (Ā com barra) resulta em:",
+                    type: "multiple",
+                    options: ["0", "1", "A", "Ā"],
+                    correct: 2,
+                    explanation: "Lei da Dupla Negação: Ā̄ = A (inverter duas vezes volta ao original)",
+                    hint: "Negar duas vezes = voltar ao original"
+                },
+                {
+                    question: "A + 1 é sempre igual a:",
+                    type: "multiple",
+                    options: ["0", "1", "A", "Ā"],
+                    correct: 1,
+                    explanation: "Lei da Anulação: A+1 = 1 (OR com 1 sempre = 1)",
+                    hint: "OR com 1 sempre resulta em 1"
+                },
+                {
+                    question: "A·A é igual a:",
+                    type: "multiple",
+                    options: ["0", "1", "A", "2A"],
+                    correct: 2,
+                    explanation: "Lei da Idempotência: A·A = A (AND entre iguais = mesmo valor)",
+                    hint: "Idempotência = repetir não muda"
+                },
+                {
+                    question: "A lei associativa permite que: (A+B)+C =",
+                    type: "multiple",
+                    options: ["A+(B+C)", "(A+C)+B", "A+B+C", "Todas as acima"],
+                    correct: 3,
+                    explanation: "Lei Associativa: Agrupar não muda resultado na soma e produto",
+                    hint: "Associação: mudar agrupamento não afeta resultado"
+                },
+                {
+                    question: "A lei comutativa permite: A+B =",
+                    type: "multiple",
+                    options: ["B+A", "A·B", "A+A", "B·A"],
+                    correct: 0,
+                    explanation: "Lei Comutativa: A ordem não importa para soma e produto",
+                    hint: "Comutativa = comutar (trocar de lugar)"
+                },
+                {
+                    question: "A distributiva: A·(B+C) =",
+                    type: "multiple",
+                    options: ["A+B·A+C", "A·B+A·C", "(A·B)+(A·C)", "B+C"],
+                    correct: 2,
+                    explanation: "Lei Distributiva: A·(B+C) = (A·B) + (A·C)",
+                    hint: "Distribuir: A vezes cada termo"
+                }
+            ],
+            karnaugh: [
+                {
+                    question: "No Mapa de Karnaugh, células adjacentes diferem em quantos bits?",
+                    type: "multiple",
+                    options: ["0 bits", "1 bit", "2 bits", "3 bits"],
+                    correct: 1,
+                    explanation: "Adjacentes diferem em APENAS 1 bit (código Gray)",
+                    hint: "Código Gray: apenas 1 bit muda entre linhas consecutivas"
+                },
+                {
+                    question: "Quais tamanhos de grupo são permitidos no K-Map?",
+                    type: "multiple",
+                    options: ["Qualquer tamanho", "Números primos", "Potências de 2", "Números pares"],
+                    correct: 2,
+                    explanation: "Somente potências de 2: 1, 2, 4, 8, 16... células",
+                    hint: "1, 2, 4, 8, 16, 32... (exponenciais de 2)"
+                },
+                {
+                    question: "Ao agrupar células no K-Map, a variável que muda dentro do grupo é:",
+                    type: "multiple",
+                    options: ["Mantida", "Eliminada", "Invertida", "Duplicada"],
+                    correct: 1,
+                    explanation: "Variável que muda → ELIMINADA. Mantém-se só as constantes",
+                    hint: "Se mudar: elimina. Se não mudar: mantém"
+                },
+                {
+                    question: "Um K-Map de 3 variáveis possui quantas células?",
+                    type: "multiple",
+                    options: ["4", "6", "8", "16"],
+                    correct: 2,
+                    explanation: "2ⁿ = 2³ = 8 células para 3 variáveis",
+                    hint: "2 elevado ao número de variáveis"
+                },
+                {
+                    question: "A regra de ouro do K-Map é:",
+                    type: "multiple",
+                    options: ["Menor grupo melhor", "Maior grupo melhor", "Grupos iguais", "Grupos ímpares"],
+                    correct: 1,
+                    explanation: "MAIOR grupo = MENOR nº de variáveis = melhor simplificação",
+                    hint: "Quanto maior o grupo, menos termos na expressão final"
+                },
+                {
+                    question: "Agrupamentos em diagonal são:",
+                    type: "multiple",
+                    options: ["Permitidos", "Proibidos", "Opcionais", "Recomendados"],
+                    correct: 1,
+                    explanation: "PROIBIDO agrupar em diagonal (só horizontal/vertical)",
+                    hint: "Só horizontal e vertical adjacências no K-Map"
+                },
+                {
+                    question: "Um K-Map de 4 variáveis possui quantas células?",
+                    type: "multiple",
+                    options: ["8", "16", "32", "64"],
+                    correct: 1,
+                    explanation: "2⁴ = 16 células para 4 variáveis (4x4 grid)",
+                    hint: "Potência de 2 com expoente 4"
+                },
+                {
+                    question: "As bordas do K-Map se conectam como:",
+                    type: "multiple",
+                    options: ["Nunca", "Em forma de toro", "Apenas inferior", "Apenas lateral"],
+                    correct: 1,
+                    explanation: "K-Map é envolvente: topo conecta com base, esquerda com direita",
+                    hint: "Imagina o K-Map envolvido em um cilindro"
+                },
+                {
+                    question: "O objetivo final do K-Map é:",
+                    type: "multiple",
+                    options: ["Complicar a expressão", "Simplificar a expressão", "Inverter variáveis", "Contar células"],
+                    correct: 1,
+                    explanation: "K-Map simplifica expressões booleanas para menos termos",
+                    hint: "K = Karnaugh, é uma ferramenta de minimização"
+                },
+                {
+                    question: "Para um K-Map de 2 variáveis, quantas células?",
+                    type: "multiple",
+                    options: ["2", "4", "8", "16"],
+                    correct: 1,
+                    explanation: "2² = 4 células (2x2 grid) para 2 variáveis",
+                    hint: "2 elevado a 2"
+                }
+            ]
+        };
+
+        // Quiz State
+        let currentCategory = '';
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let userAnswers = [];
+        let hintsUsed = 0;
+        let quizStats = [];
+
+        // Carregar estatísticas do localStorage
+        function loadStats() {
+            const saved = localStorage.getItem('quizStats');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Salvar estatísticas
+        function saveStats() {
+            quizStats.push({
+                category: currentCategory,
+                score: score,
+                correctAnswers: correctAnswers,
+                totalQuestions: questions.length,
+                percentage: Math.round((correctAnswers / questions.length) * 100),
+                difficulty: globalDifficulty,
+                date: new Date().toLocaleString('pt-BR')
+            });
+            localStorage.setItem('quizStats', JSON.stringify(quizStats));
+        }
+
+        // Mostrar Estatísticas
+        function showStats() {
+            const stats = loadStats();
+            if (stats.length === 0) {
+                alert('Nenhuma estatística salva ainda. Complete um quiz!');
+                return;
+            }
+            
+            let statsHTML = 'ESTATÍSTICAS:\n\n';
+            stats.forEach((stat, i) => {
+                statsHTML += `${i+1}. ${stat.category.toUpperCase()} (${stat.difficulty})\n`;
+                statsHTML += `   ${stat.correctAnswers}/${stat.totalQuestions} acertos (${stat.percentage}%)\n`;
+                statsHTML += `   ${stat.date}\n\n`;
+            });
+            alert(statsHTML);
+        }
+
+        // Start Quiz
+        function startQuiz(category) {
+            currentCategory = category;
+            currentStreak = parseInt(localStorage.getItem('streak') || '0');
+            quizStats = loadStats();
+            
+            // Load questions
+            if (category === 'all') {
+                questions = [
+                    ...quizData.conversoes,
+                    ...quizData.portas,
+                    ...quizData.algebra,
+                    ...quizData.karnaugh
+                ].sort(() => Math.random() - 0.5);
+            } else {
+                questions = [...quizData[category]];
+            }
+
+            // Filtrar por dificuldade (simulação com dicas e tempo)
+            currentQuestionIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            hintsUsed = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            quizStartTime = Date.now();
+
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('category-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+
+            updateDashboard();
+            loadQuestion();
+            startTimer();
+        }
+
+        // Timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                
+                const timerDisplay = document.getElementById('timer-value');
+                timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                
+                // Mudar cor baseado no tempo
+                const timerContainer = document.getElementById('timer-display');
+                if (elapsed > 300) {
+                    timerDisplay.classList.add('timer-danger');
+                    timerDisplay.classList.remove('timer-warning');
+                } else if (elapsed > 180) {
+                    timerDisplay.classList.add('timer-warning');
+                    timerDisplay.classList.remove('timer-danger');
+                }
+            }, 1000);
+        }
+
+        // Load Question
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('question-container');
+            
+            let html = `
+                <div class="question-header">
+                    <div class="question-number">QUESTÃO ${currentQuestionIndex + 1}/${questions.length}</div>
+                    <div class="question-category">${getCategoryName()}</div>
+                </div>
+                <div class="question-text">${question.question}</div>
+            `;
+
+            if (question.type === 'multiple') {
+                html += '<div class="options">';
+                question.options.forEach((option, index) => {
+                    const letter = String.fromCharCode(65 + index);
+                    const selected = userAnswers[currentQuestionIndex] === index ? 'selected' : '';
+                    html += `
+                        <div class="option option-enhanced ${selected}" onclick="selectOption(${index})">
+                            <div class="option-letter">${letter}</div>
+                            <div class="option-text">${option}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            // Add hints section
+            html += `
+                <div class="hints-container">
+                    <button class="hint-button" onclick="showHint()" id="hint-btn">
+                        💡 Dica (${3 - hintsUsed}/3)
+                    </button>
+                </div>
+                <div id="hint-display"></div>
+            `;
+
+            container.innerHTML = html;
+            
+            document.getElementById('check-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('hint-display').innerHTML = '';
+
+            if (hintsUsed >= 3) {
+                document.getElementById('hint-btn').disabled = true;
+            }
+
+            updateProgress();
+            updateAchievementBadge();
+        }
+
+        // Show Hint
+        function showHint() {
+            if (hintsUsed >= 3) return;
+            
+            const question = questions[currentQuestionIndex];
+            const hintDisplay = document.getElementById('hint-display');
+            
+            hintDisplay.innerHTML = `
+                <div class="hint-display">
+                    <strong>💡 Dica:</strong> ${question.hint || 'Nenhuma dica disponível'}
+                </div>
+            `;
+            
+            hintsUsed++;
+            document.getElementById('hint-btn').textContent = `💡 Dica (${3 - hintsUsed}/3)`;
+            
+            if (hintsUsed >= 3) {
+                document.getElementById('hint-btn').disabled = true;
+            }
+        }
+
+        // Update Achievement Badge
+        function updateAchievementBadge() {
+            const badge = document.getElementById('achievement-badge');
+            if (currentStreak >= 5) {
+                badge.innerHTML = `🔥 STREAK: ${currentStreak}`;
+            } else if (correctAnswers === currentQuestionIndex + 1) {
+                badge.innerHTML = `✨ Perfeito neste quiz!`;
+            } else {
+                badge.innerHTML = '';
+            }
+        }
+
+        // Select Option
+        function selectOption(index) {
+            if (userAnswers[currentQuestionIndex] !== null) return;
+
+            userAnswers[currentQuestionIndex] = index;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) opt.classList.add('selected');
+            });
+        }
+
+        // Check Answer
+        function checkAnswer() {
+            const question = questions[currentQuestionIndex];
+            let userAnswer = userAnswers[currentQuestionIndex];
+            
+            if (userAnswer === null || userAnswer === '') {
+                alert('⚠️ Selecione uma resposta!');
+                return;
+            }
+
+            const isCorrect = userAnswer === question.correct;
+
+            // Update stats
+            if (isCorrect) {
+                correctAnswers++;
+                currentStreak++;
+                score += Math.round(100 / questions.length);
+            } else {
+                currentStreak = 0;
+            }
+
+            localStorage.setItem('streak', currentStreak);
+
+            // Show feedback
+            showFeedback(isCorrect, question);
+
+            // Update UI
+            document.getElementById('check-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            
+            updateDashboard();
+            updateAchievementBadge();
+        }
+
+        // Show Feedback
+        function showFeedback(isCorrect, question) {
+            const container = document.getElementById('question-container');
+            const feedbackClass = isCorrect ? 'correct' : 'wrong';
+            const feedbackTitle = isCorrect ? '✅ Correto!' : '❌ Incorreto!';
+            
+            if (question.type === 'multiple') {
+                const options = document.querySelectorAll('.option');
+                options.forEach((opt, i) => {
+                    opt.style.pointerEvents = 'none';
+                    if (i === question.correct) {
+                        opt.classList.add('correct');
+                    } else if (i === userAnswers[currentQuestionIndex] && !isCorrect) {
+                        opt.classList.add('wrong');
+                    }
+                });
+            }
+
+            const feedbackHTML = `
+                <div class="feedback ${feedbackClass}">
+                    <div class="feedback-title">${feedbackTitle}</div>
+                    <div class="feedback-text"><strong>Explicação:</strong> ${question.explanation}</div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', feedbackHTML);
+        }
+
+        // Next Question
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                hintsUsed = 0;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Previous Question
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                hintsUsed = 0;
+                loadQuestion();
+            }
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('current-question').textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('correct-count').textContent = correctAnswers;
+            
+            const percentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
+            document.getElementById('percentage').textContent = percentage + '%';
+
+            const streakDisplay = document.getElementById('streak-display');
+            if (currentStreak > 0) {
+                streakDisplay.innerHTML = `<div class="streak-counter"><div class="streak-flame">🔥</div><div class="streak-number">${currentStreak}</div></div>`;
+            }
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+        }
+
+        // Show Results
+        function showResults() {
+            clearInterval(timerInterval);
+            saveStats();
+            
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+            document.getElementById('final-score').textContent = percentage + '%';
+
+            let message = '';
+            let emoji = '';
+            if (percentage >= 90) { message = '🏆 EXCELENTE! Você domina o conteúdo!'; emoji = '🏆'; }
+            else if (percentage >= 80) { message = '🥇 MUITO BOM! Desempenho notável!'; emoji = '🥇'; }
+            else if (percentage >= 70) { message = '🎯 BOM! Passou com sucesso!'; emoji = '🎯'; }
+            else if (percentage >= 50) { message = '📚 ACEITÁVEL! Continue estudando!'; emoji = '📚'; }
+            else { message = '💪 ESTUDE MAIS! Revise os conceitos!'; emoji = '💪'; }
+
+            document.getElementById('results-message').textContent = message;
+
+            // Certificate
+            const cert = document.getElementById('certificate');
+            cert.innerHTML = `
+                <div class="certificate-title">${emoji} ${getCategoryName().toUpperCase()}</div>
+                <div class="certificate-text">Certificado de Conclusão</div>
+                <div class="certificate-line"></div>
+                <p style="color: var(--accent-cyan); font-family: 'Orbitron'; font-size: 1.3rem; font-weight: 700;">
+                    ${percentage}% de Acurácia
+                </p>
+                <div class="certificate-line"></div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                    Completado em: ${new Date().toLocaleString('pt-BR')}
+                </p>
+            `;
+
+            // Breakdown
+            const breakdown = document.getElementById('results-breakdown');
+            breakdown.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total de Questões</div>
+                    <div class="stat-value">${questions.length}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Acertos</div>
+                    <div class="stat-value" style="color: var(--accent-green)">${correctAnswers}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Erros</div>
+                    <div class="stat-value" style="color: var(--accent-red)">${questions.length - correctAnswers}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pontuação Final</div>
+                    <div class="stat-value">${percentage}%</div>
+                </div>
+            `;
+        }
+
+        // Get Category Name
+        function getCategoryName() {
+            const names = {
+                conversoes: '🔢 CONVERSÕES',
+                portas: '🚪 PORTAS LÓGICAS',
+                algebra: '📐 ÁLGEBRA BOOLEANA',
+                karnaugh: '🗺️ KARNAUGH',
+                all: '🎯 COMPLETO'
+            };
+            return names[currentCategory] || '';
+        }
+
+        // Download Results
+        function downloadResults() {
+            const stats = loadStats();
+            const lastStat = stats[stats.length - 1];
+            
+            const csv = `Categoria,Dificuldade,Acertos,Total,Percentual,Data\n${lastStat.category},${lastStat.difficulty},${lastStat.correctAnswers},${lastStat.totalQuestions},${lastStat.percentage}%,${lastStat.date}`;
+            
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+            element.setAttribute('download', 'resultado_quiz.csv');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        // Quit Quiz
+        function quitQuiz() {
+            if (confirm('⚠️ Tem certeza? Todo o progresso será perdido.')) {
+                clearInterval(timerInterval);
+                location.reload();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Restaurar tema
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                toggleTheme();
+            }
+            
+            setTimeout(() => {
+                document.getElementById('loading-screen').classList.add('hidden');
+            }, 1500);
+
+            // Restaurar dificuldade
+            const savedDifficulty = localStorage.getItem('difficulty') || 'easy';
+            globalDifficulty = savedDifficulty;
+            document.querySelectorAll(`.difficulty-btn.${savedDifficulty}`).forEach(btn => {
+                btn.classList.add('active');
+            });
+
+            // Restaurar aba anterior
+            const savedTab = localStorage.getItem('currentTab') || 'quiz';
+            if (savedTab === 'study') {
+                switchTab('study', document.querySelectorAll('.tab-btn')[1]);
+            } else if (savedTab === 'materials') {
+                switchTab('materials', document.querySelectorAll('.tab-btn')[2]);
+            }
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.key >= 'A' && event.key <= 'D' && !document.getElementById('quiz-screen').classList.contains('hidden')) {
+                const index = event.key.charCodeAt(0) - 65;
+                selectOption(index);
+            }
+        });
+    </script>
+    </script>
+</body>
+</html>
